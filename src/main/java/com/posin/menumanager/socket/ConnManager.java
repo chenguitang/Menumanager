@@ -77,6 +77,7 @@ public class ConnManager {
                     } catch (IOException e) {
                         Log.d(TAG, "socket 断开连接，等待重连！");
                         e.printStackTrace();
+
                     }
                 }
             }

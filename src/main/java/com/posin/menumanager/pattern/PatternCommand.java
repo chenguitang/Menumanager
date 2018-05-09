@@ -1,11 +1,63 @@
 package com.posin.menumanager.pattern;
 
+import com.posin.menumanager.utils.StringUtils;
+
 /**
  * Created by Greetty on 2018/5/8.
  * <p>
  * 控制副屏默认布局指令
  */
 public class PatternCommand {
+
+
+    /**
+     * 添加一个菜品到菜单栏
+     * 格式化后的指令
+     *
+     * @param name      菜品名称
+     * @param amount    菜品数量
+     * @param prices    菜品单价
+     * @param sum       所有菜品总计
+     * @param isChinese 是否为中文
+     * @return 指令集
+     */
+    public static String[][] addItemCommand(String name, int amount, double prices,
+                                            double sum, boolean isChinese) {
+
+        if (isChinese) {
+            return PatternCommand.getAddViewCode(StringUtils.formatMaxLength(name, 5), amount +
+                            " * " + prices + " ￥", String.valueOf(amount * prices) + " 元",
+                    String.valueOf(sum));
+
+        } else {
+            return PatternCommand.getAddViewCode(StringUtils.formatMaxLength(name, 5), amount +
+                            " * " + prices + " $", String.valueOf(amount * prices) + " $",
+                    String.valueOf(sum));
+        }
+    }
+
+    /**
+     * 修改菜单栏菜品信息
+     * 格式化后的指令
+     *
+     * @param name      菜品名称
+     * @param amount    菜品数量
+     * @param prices    菜品单价
+     * @param sum       所有菜品总计
+     * @param isChinese 是否为中文
+     * @return 指令集
+     */
+    public static String[][] setItemCommand(String name, int amount, double prices,
+                                            double sum, boolean isChinese) {
+        if (isChinese) {
+            return PatternCommand.getSetViewCode(StringUtils.formatMaxLength(name, 5), amount +
+                            " * " + prices + " ￥", String.valueOf(amount * prices) + " 元",
+                    String.valueOf(sum));
+        } else {
+            return PatternCommand.getSetViewCode(StringUtils.formatMaxLength(name, 5), amount +
+                    " * " + prices + " $", String.valueOf(amount * prices) + " $", String.valueOf(sum));
+        }
+    }
 
 
     /**

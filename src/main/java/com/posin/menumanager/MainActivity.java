@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.posin.menumanager.pattern.PatternCommand;
 import com.posin.menumanager.pattern.PatternConfig;
 import com.posin.menumanager.pattern.PatternDefaultUIManager;
 import com.posin.menumanager.pattern.model.Dishes;
@@ -48,22 +49,22 @@ public class MainActivity extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.btn_init_ui:
                 try {
-                    mUIManager.init(6);
+                    mUIManager.init(6, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case R.id.btn_add_menu:
                 try {
-//                    mUIManager.addMenu("狗仔豆", 2, 40.25);
+//                    mUIManager.addMenu("蒸熊掌", 2, 40.25);
                     for (int i = 0; i < 10; i++) {
                         if (i % 2 == 0)
-                            mUIManager.addMenu("狗仔豆" + i, i + 1, 40.275);
+                            mUIManager.addMenu("蒸熊掌" + i, 1, 40.275);
                         else
-                            mUIManager.addMenu("姜葱鸡拼烧鸭" + i, 1, 12.275);
+                            mUIManager.addMenu("蒸熊掌" + i, 1, 12.275);
 
                         Toast.makeText(this, "i", Toast.LENGTH_SHORT).show();
-                            Thread.sleep(2000);
+                        Thread.sleep(100);
                     }
 
                 } catch (Exception e) {
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btn_add_menu2:
                 try {
                     mUIManager.addMenu("姜葱鸡拼烧鸭", 1, 12.275);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
