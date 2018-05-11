@@ -26,13 +26,15 @@ public class PatternCommand {
 
         if (isChinese) {
             return PatternCommand.getAddViewCode(StringUtils.formatMaxLength(name, 5), amount +
-                            " * " + prices + " ￥", String.valueOf(amount * prices) + " 元",
-                    String.valueOf(sum));
+                            " * " + StringUtils.decimalFormat(prices, 2) + " ￥",
+                    StringUtils.decimalFormat(amount * prices, 2) + " 元",
+                    StringUtils.decimalFormat(sum, 2));
 
         } else {
             return PatternCommand.getAddViewCode(StringUtils.formatMaxLength(name, 5), amount +
-                            " * " + prices + " $", String.valueOf(amount * prices) + " $",
-                    String.valueOf(sum));
+                            " * " + StringUtils.decimalFormat(prices, 2) + " $",
+                    StringUtils.decimalFormat(amount * prices, 2) + " $",
+                    StringUtils.decimalFormat(sum, 2));
         }
     }
 
@@ -51,11 +53,14 @@ public class PatternCommand {
                                             double sum, boolean isChinese) {
         if (isChinese) {
             return PatternCommand.getSetViewCode(StringUtils.formatMaxLength(name, 5), amount +
-                            " * " + prices + " ￥", String.valueOf(amount * prices) + " 元",
-                    String.valueOf(sum));
+                            " * " + StringUtils.decimalFormat(prices, 2) + " ￥",
+                    StringUtils.decimalFormat(amount * prices, 2) + " 元",
+                    StringUtils.decimalFormat(sum, 2));
         } else {
             return PatternCommand.getSetViewCode(StringUtils.formatMaxLength(name, 5), amount +
-                    " * " + prices + " $", String.valueOf(amount * prices) + " $", String.valueOf(sum));
+                            " * " + StringUtils.decimalFormat(prices, 2) + " $",
+                    StringUtils.decimalFormat(amount * prices, 2) + " $",
+                    StringUtils.decimalFormat(sum, 2));
         }
     }
 

@@ -79,6 +79,8 @@ public class ConnManager {
                         e.printStackTrace();
 
                     }
+                }else{
+                    Log.e(TAG, "socket ==null or socket is closed");
                 }
             }
         });

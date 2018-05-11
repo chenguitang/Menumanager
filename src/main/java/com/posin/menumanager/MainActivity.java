@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick({R.id.btn_init_ui, R.id.btn_add_menu, R.id.btn_add_menu2})
+    @OnClick({R.id.btn_init_ui, R.id.btn_add_menu, R.id.btn_add_menu2,
+            R.id.btn_sub_menu1, R.id.btn_sub_menu2})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_init_ui:
@@ -57,14 +58,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btn_add_menu:
                 try {
 //                    mUIManager.addMenu("蒸熊掌", 2, 40.25);
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 15; i++) {
                         if (i % 2 == 0)
                             mUIManager.addMenu("蒸熊掌" + i, 1, 40.275);
                         else
                             mUIManager.addMenu("蒸熊掌" + i, 1, 12.275);
-
-                        Toast.makeText(this, "i", Toast.LENGTH_SHORT).show();
-                        Thread.sleep(100);
+                        Thread.sleep(1000);
                     }
 
                 } catch (Exception e) {
@@ -73,7 +72,28 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.btn_add_menu2:
                 try {
-                    mUIManager.addMenu("姜葱鸡拼烧鸭", 1, 12.275);
+                    mUIManager.addMenu("蒸熊掌" + 2, 1, 12.275);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.btn_sub_menu1:
+                try {
+                    for (int i = 14; i >= 0; i--) {
+                        if (i % 2 == 0)
+                            mUIManager.subsideMenu("蒸熊掌" + i, 1, 40.275);
+                        else
+                            mUIManager.subsideMenu("蒸熊掌" + i, 1, 12.275);
+                        Thread.sleep(1000);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.btn_sub_menu2:
+                try {
+                    mUIManager.subsideMenu("蒸熊掌" + 2, 1, 12.275);
 
                 } catch (Exception e) {
                     e.printStackTrace();
