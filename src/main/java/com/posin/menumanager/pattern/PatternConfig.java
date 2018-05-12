@@ -115,7 +115,8 @@ public class PatternConfig {
                             "type", "text",
                             "width", "match_parent",
                             "gravity", "bottom",
-                            "text", "- - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - -",
+                            "text", "- - - - - - - - - - - - - - - - - - - -  - - - - - - - - -" +
+                            "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
                             "size", "18",
                             "color", "0xFFFFFFFF",
                     },
@@ -356,7 +357,7 @@ public class PatternConfig {
                             "gravity", "center",
                             "width", "match_parent",
                             "height", "match_parent",
-                            "text", "请仔细核对好自己购买的东西哦，亲！",
+                            "text", "请仔细核对您购买的东西哦，亲！",
                             "size", "18",
                             "color", "0xFF000000",
                     },

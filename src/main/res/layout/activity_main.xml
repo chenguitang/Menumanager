@@ -14,52 +14,74 @@
         android:id="@+id/btn_init_ui"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:padding="20dp"
         android:layout_centerInParent="true"
-        android:text="初始化副屏布局" />
+        android:padding="20dp"
+        android:text="初始化副屏布局"
+        android:textSize="22sp" />
 
     <Button
         android:id="@+id/btn_add_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:padding="20dp"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/btn_init_ui"
         android:layout_toStartOf="@id/btn_init_ui"
-        android:layout_centerVertical="true"
-        android:text="增加菜品" />
+        android:padding="20dp"
+        android:text="增加菜品"
+        android:textSize="22sp" />
 
     <Button
         android:id="@+id/btn_add_menu2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:padding="20dp"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/btn_add_menu"
         android:layout_toStartOf="@id/btn_add_menu"
-        android:layout_centerVertical="true"
-        android:text="增加菜品2" />
+        android:padding="20dp"
+        android:text="增加菜品2"
+        android:textSize="22sp" />
 
     <Button
         android:id="@+id/btn_sub_menu1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:padding="20dp"
-        android:layout_toRightOf="@id/btn_init_ui"
-        android:layout_toEndOf="@id/btn_init_ui"
         android:layout_centerVertical="true"
-        android:text="减少菜品" />
+        android:layout_toEndOf="@id/btn_init_ui"
+        android:layout_toRightOf="@id/btn_init_ui"
+        android:padding="20dp"
+        android:text="减少菜品"
+        android:textSize="22sp" />
 
     <Button
         android:id="@+id/btn_sub_menu2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:padding="20dp"
-        android:layout_toRightOf="@id/btn_sub_menu1"
-        android:layout_toEndOf="@id/btn_sub_menu1"
         android:layout_centerVertical="true"
-        android:text="减少菜品2" />
+        android:layout_toEndOf="@id/btn_sub_menu1"
+        android:layout_toRightOf="@id/btn_sub_menu1"
+        android:padding="20dp"
+        android:text="减少菜品2"
+        android:textSize="22sp" />
+
+    <Button
+        android:id="@+id/btn_pay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_init_ui"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:padding="20dp"
+        android:text="支付"
+        android:textSize="22sp" />
+
+    <Button
+        android:id="@+id/btn_clear_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_init_ui"
+        android:layout_toRightOf="@id/btn_pay"
+        android:layout_toEndOf="@id/btn_pay"
+        android:padding="20dp"
+        android:text="清空菜单栏"
+        android:textSize="22sp" />
 </RelativeLayout>

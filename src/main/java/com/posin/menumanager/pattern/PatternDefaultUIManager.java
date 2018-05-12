@@ -83,7 +83,7 @@ public class PatternDefaultUIManager {
      *
      * @throws Exception 异常
      */
-    public void clearDishes() throws Exception {
+    public static void clearDishes() throws Exception {
         sum = 0;
         menuMap.clear();
         ConnManager.getConnManager().sendViewCode(
@@ -284,5 +284,27 @@ public class PatternDefaultUIManager {
         }
     }
 
+    /**
+     * 获取修改支付视图代码
+     *
+     * @param alreadyPay 已收款
+     * @return 指令集
+     */
+    public static void pay(double alreadyPay) {
+        ConnManager.getConnManager().sendViewCode(PatternCommand.getResultViewCode(
+                String.valueOf(alreadyPay), String.valueOf(
+                        DoubleUtils.subtract(alreadyPay, getSum()))));
+    }
 
+
+
+
+    /**
+     * 获取菜单总额
+     *
+     * @return double
+     */
+    public static double getSum() {
+        return sum;
+    }
 }

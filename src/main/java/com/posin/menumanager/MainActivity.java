@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick({R.id.btn_init_ui, R.id.btn_add_menu, R.id.btn_add_menu2,
-            R.id.btn_sub_menu1, R.id.btn_sub_menu2})
+            R.id.btn_sub_menu1, R.id.btn_sub_menu2, R.id.btn_pay,R.id.btn_clear_layout})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_init_ui:
@@ -94,13 +94,21 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btn_sub_menu2:
                 try {
                     mUIManager.subsideMenu("蒸熊掌" + 2, 1, 12.275);
-
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.btn_pay:
+                PatternDefaultUIManager.pay(PatternDefaultUIManager.getSum() + 30);
+                break;
+            case R.id.btn_clear_layout:
+                try {
+                    PatternDefaultUIManager.clearDishes();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
         }
-
     }
 
     public String[][] getCmd() {
