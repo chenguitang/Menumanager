@@ -54,7 +54,6 @@ public class ConnManager {
      */
     public void setSocket(Socket socket) {
         this.socket = socket;
-
     }
 
     /**
@@ -63,6 +62,7 @@ public class ConnManager {
      * @param commands 指令集
      */
     public void sendViewCode(final String[][] commands) {
+
         ThreadManage.getSinglePool().execute(new Runnable() {
             @Override
             public void run() {

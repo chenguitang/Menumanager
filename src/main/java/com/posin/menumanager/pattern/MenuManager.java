@@ -9,23 +9,17 @@ import com.posin.menumanager.utils.LogUtils;
 import com.posin.menumanager.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Vector;
 
 /**
  * Created by Greetty on 2018/5/2.
  * <p>
  * 默认UI布局
  */
-public class PatternDefaultUIManager {
+public class MenuManager {
 
-    private static final String TAG = "PatternDefaultUIManager";
-    private static PatternDefaultUIManager mPatternDefaultUIManager = null;
+    private static final String TAG = "MenuManager";
+    private static MenuManager mPatternDefaultUIManager = null;
     private static ArrayList<Dishes> menuLists = null;
     private static LinkedHashMap<String, Dishes> menuMap;
     //    private static Vector<Dishes> mMenuVector=null;
@@ -34,9 +28,9 @@ public class PatternDefaultUIManager {
     private static double sum = 0; //总计
 
 
-    public static synchronized PatternDefaultUIManager getInstance() {
+    public static synchronized MenuManager getInstance() {
         if (mPatternDefaultUIManager == null) {
-            mPatternDefaultUIManager = new PatternDefaultUIManager();
+            mPatternDefaultUIManager = new MenuManager();
         }
         if (menuLists == null) {
             menuLists = new ArrayList<>();
@@ -50,7 +44,7 @@ public class PatternDefaultUIManager {
         return mPatternDefaultUIManager;
     }
 
-    private PatternDefaultUIManager() {
+    private MenuManager() {
     }
 
 
@@ -74,7 +68,7 @@ public class PatternDefaultUIManager {
         ConnManager.getConnManager();
         Thread.sleep(100);
         ConnManager.getConnManager().sendViewCode(
-                PatternConfig.getLayoutCommand(PatternConfig.LAYOUT_DEFAULT));
+                MenuConfig.getLayoutCommand(MenuConfig.LAYOUT_DEFAULT));
     }
 
 
@@ -87,7 +81,7 @@ public class PatternDefaultUIManager {
         sum = 0;
         menuMap.clear();
         ConnManager.getConnManager().sendViewCode(
-                PatternConfig.getLayoutCommand(PatternConfig.LAYOUT_DEFAULT));
+                MenuConfig.getLayoutCommand(MenuConfig.LAYOUT_DEFAULT));
     }
 
     /**
@@ -116,7 +110,7 @@ public class PatternDefaultUIManager {
                         LogUtils.Error(TAG, "name: " + nowDishes.getDishName() + "  prices: " +
                                 nowDishes.getPrices() + "  amount: " + nowDishes.getAmount());
                         Log.e(TAG, "prices*amount: " + nowDishes.getPrices() * nowDishes.getAmount());
-                        ConnManager.getConnManager().sendViewCode(PatternCommand.setItemCommand(
+                        ConnManager.getConnManager().sendViewCode(MenuCommand.setItemCommand(
                                 nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
                                 sum, IS_CHINESE));
 
@@ -125,7 +119,7 @@ public class PatternDefaultUIManager {
                         dishes.setAmount((dishes.getAmount() + number));
                         dishes.setShowing(true);
                         nowDishes = dishes;
-                        ConnManager.getConnManager().sendViewCode(PatternCommand.addItemCommand(
+                        ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
                                 nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
                                 sum, IS_CHINESE));
                     }
@@ -134,7 +128,7 @@ public class PatternDefaultUIManager {
                     removeFirstShowingItem(menuMap, sum);
                     nowDishes = new Dishes(name, number, prices, true);
                     //菜单列表显示新菜品
-                    ConnManager.getConnManager().sendViewCode(PatternCommand.addItemCommand(
+                    ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
                             nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
                             sum, IS_CHINESE));
                 }
@@ -147,7 +141,7 @@ public class PatternDefaultUIManager {
                     dishes.setShowing(true);
                     nowDishes = dishes;
 
-                    ConnManager.getConnManager().sendViewCode(PatternCommand.setItemCommand(
+                    ConnManager.getConnManager().sendViewCode(MenuCommand.setItemCommand(
                             nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
                             sum, IS_CHINESE));
 
@@ -155,7 +149,7 @@ public class PatternDefaultUIManager {
                     //添加新菜品到菜单
                     nowDishes = new Dishes(name, number, prices, true);
                     //菜单列表显示新菜品
-                    ConnManager.getConnManager().sendViewCode(PatternCommand.addItemCommand(
+                    ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
                             nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
                             sum, IS_CHINESE));
                 }
@@ -163,7 +157,7 @@ public class PatternDefaultUIManager {
 
         } else {
             nowDishes = new Dishes(name, number, prices, true);
-            ConnManager.getConnManager().sendViewCode(PatternCommand.addItemCommand(
+            ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
                     nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
                     sum, IS_CHINESE));
         }
@@ -183,7 +177,7 @@ public class PatternDefaultUIManager {
             if (removeDishes.isShowing()) {
                 LogUtils.Error(TAG, "移除的菜品名字为： " + removeDishes.getDishName());
                 ConnManager.getConnManager().sendViewCode(
-                        PatternCommand.getRemoveViewCode(removeDishes.getDishName(),
+                        MenuCommand.getRemoveViewCode(removeDishes.getDishName(),
                                 StringUtils.decimalFormat(sum, 2)));
                 removeDishes.setShowing(false);
                 menuMap.put(removeDishes.getDishName(), removeDishes);
@@ -215,7 +209,7 @@ public class PatternDefaultUIManager {
                 if (dishes.getAmount() <= number) {
                     menuMap.remove(name); //从列表中删除
                     ConnManager.getConnManager().sendViewCode(
-                            PatternCommand.getRemoveViewCode(name,
+                            MenuCommand.getRemoveViewCode(name,
                                     StringUtils.decimalFormat(sum, 2)));
 
                     //如果菜单列表中存在未显示的菜品，显示出来
@@ -224,7 +218,7 @@ public class PatternDefaultUIManager {
                         if (!addShowDishes.isShowing()) {
                             addShowDishes.setShowing(true);
                             menuMap.put(addShowDishes.getDishName(), addShowDishes);
-                            ConnManager.getConnManager().sendViewCode(PatternCommand.addItemCommand(
+                            ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
                                     addShowDishes.getDishName(), addShowDishes.getAmount(),
                                     addShowDishes.getPrices(), sum, IS_CHINESE));
                             Log.e(TAG, "*****************************************");
@@ -240,14 +234,14 @@ public class PatternDefaultUIManager {
                         dishes.setAmount(dishes.getAmount() - number);
                         dishes.setPrices(prices);
                         menuMap.put(name, dishes);
-                        ConnManager.getConnManager().sendViewCode(PatternCommand.setItemCommand(
+                        ConnManager.getConnManager().sendViewCode(MenuCommand.setItemCommand(
                                 name, dishes.getAmount(), dishes.getPrices(), sum, IS_CHINESE));
                     } else {
                         dishes.setAmount(dishes.getAmount() - number);
                         dishes.setPrices(prices);
                         dishes.setShowing(true);
                         menuMap.put(name, dishes);
-                        ConnManager.getConnManager().sendViewCode(PatternCommand.addItemCommand(
+                        ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
                                 name, dishes.getAmount(), dishes.getPrices(), sum, IS_CHINESE));
                     }
                 }
@@ -264,7 +258,7 @@ public class PatternDefaultUIManager {
 //                    for (String s : menuMap.keySet()) {
 //                        if (!menuMap.get(s).isShowing()) {
 //                            Dishes addShowDishes = menuMap.get(s);
-//                            ConnManager.getConnManager().sendViewCode(PatternCommand.addItemCommand(
+//                            ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
 //                                    addShowDishes.getDishName(), addShowDishes.getAmount(),
 //                                    addShowDishes.getPrices(), sum, IS_CHINESE));
 //                            addShowAmount++;
@@ -291,7 +285,7 @@ public class PatternDefaultUIManager {
      * @return 指令集
      */
     public static void pay(double alreadyPay) {
-        ConnManager.getConnManager().sendViewCode(PatternCommand.getResultViewCode(
+        ConnManager.getConnManager().sendViewCode(MenuCommand.getResultViewCode(
                 String.valueOf(alreadyPay), String.valueOf(
                         DoubleUtils.subtract(alreadyPay, getSum()))));
     }

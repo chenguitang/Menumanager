@@ -5,7 +5,7 @@ package com.posin.menumanager.pattern;
  * <p>
  * 布局工具
  */
-public class PatternConfig {
+public class MenuConfig {
 
     /**
      * 默认布局

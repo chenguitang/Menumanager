@@ -7,7 +7,7 @@ import com.posin.menumanager.utils.StringUtils;
  * <p>
  * 控制副屏默认布局指令
  */
-public class PatternCommand {
+public class MenuCommand {
 
 
     /**
@@ -25,13 +25,13 @@ public class PatternCommand {
                                             double sum, boolean isChinese) {
 
         if (isChinese) {
-            return PatternCommand.getAddViewCode(StringUtils.formatMaxLength(name, 5), amount +
+            return MenuCommand.getAddViewCode(StringUtils.formatMaxLength(name, 5), amount +
                             " * " + StringUtils.decimalFormat(prices, 2) + " ￥",
                     StringUtils.decimalFormat(amount * prices, 2) + " 元",
                     StringUtils.decimalFormat(sum, 2));
 
         } else {
-            return PatternCommand.getAddViewCode(StringUtils.formatMaxLength(name, 5), amount +
+            return MenuCommand.getAddViewCode(StringUtils.formatMaxLength(name, 5), amount +
                             " * " + StringUtils.decimalFormat(prices, 2) + " $",
                     StringUtils.decimalFormat(amount * prices, 2) + " $",
                     StringUtils.decimalFormat(sum, 2));
@@ -52,12 +52,12 @@ public class PatternCommand {
     public static String[][] setItemCommand(String name, int amount, double prices,
                                             double sum, boolean isChinese) {
         if (isChinese) {
-            return PatternCommand.getSetViewCode(StringUtils.formatMaxLength(name, 5), amount +
+            return MenuCommand.getSetViewCode(StringUtils.formatMaxLength(name, 5), amount +
                             " * " + StringUtils.decimalFormat(prices, 2) + " ￥",
                     StringUtils.decimalFormat(amount * prices, 2) + " 元",
                     StringUtils.decimalFormat(sum, 2));
         } else {
-            return PatternCommand.getSetViewCode(StringUtils.formatMaxLength(name, 5), amount +
+            return MenuCommand.getSetViewCode(StringUtils.formatMaxLength(name, 5), amount +
                             " * " + StringUtils.decimalFormat(prices, 2) + " $",
                     StringUtils.decimalFormat(amount * prices, 2) + " $",
                     StringUtils.decimalFormat(sum, 2));
@@ -226,6 +226,11 @@ public class PatternCommand {
                         "action", "set",
                         "name", "text_odd",
                         "text", giveChange,
+                },
+                {
+                        "action", "set",
+                        "name", "text_pre",
+                        "text", alreadyPay,
                 },
         };
 
