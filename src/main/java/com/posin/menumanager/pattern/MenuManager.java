@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.posin.menumanager.pattern.model.Dishes;
 import com.posin.menumanager.socket.ConnManager;
+import com.posin.menumanager.socket.listener.ConnectCallback;
+import com.posin.menumanager.socket.listener.SendCallback;
 import com.posin.menumanager.utils.DoubleUtils;
 import com.posin.menumanager.utils.LogUtils;
 import com.posin.menumanager.utils.StringUtils;
@@ -32,12 +34,7 @@ public class MenuManager {
         if (mPatternDefaultUIManager == null) {
             mPatternDefaultUIManager = new MenuManager();
         }
-        if (menuLists == null) {
-            menuLists = new ArrayList<>();
-        }
-//        if (mMenuVector==null){
-//            mMenuVector=new Vector<>();
-//        }
+
         if (menuMap == null) {
             menuMap = new LinkedHashMap<>();
         }
@@ -47,11 +44,14 @@ public class MenuManager {
     private MenuManager() {
     }
 
-
     /**
-     * 是否已初始化布局UI
+     * 连接广告系统
+     *
+     * @param callback ConnectCallback
      */
-    private static boolean HAVE_INIT = false;
+    public void connect(ConnectCallback callback) {
+        ConnManager.getConnManager().connectServer(callback);
+    }
 
     /**
      * 初始化默认布局
@@ -60,15 +60,14 @@ public class MenuManager {
      * @param isChinese   是否为中文
      * @throws Exception 异常
      */
-    public void init(int showMaxDish, boolean isChinese) throws Exception {
+    public void initDefaultUI(int showMaxDish, boolean isChinese, final SendCallback sendCallback) throws Exception {
         SHOW_MAX_DISHES = showMaxDish;
         IS_CHINESE = isChinese;
         sum = 0;
         menuMap.clear();
-        ConnManager.getConnManager();
-        Thread.sleep(100);
         ConnManager.getConnManager().sendViewCode(
-                MenuConfig.getLayoutCommand(MenuConfig.LAYOUT_DEFAULT));
+                MenuConfig.getLayoutCommand(MenuConfig.LAYOUT_DEFAULT), sendCallback);
+
     }
 
 
@@ -77,11 +76,11 @@ public class MenuManager {
      *
      * @throws Exception 异常
      */
-    public static void clearDishes() throws Exception {
+    public static void clearDishes(SendCallback sendCallback) throws Exception {
         sum = 0;
         menuMap.clear();
         ConnManager.getConnManager().sendViewCode(
-                MenuConfig.getLayoutCommand(MenuConfig.LAYOUT_DEFAULT));
+                MenuConfig.getLayoutCommand(MenuConfig.LAYOUT_DEFAULT), sendCallback);
     }
 
     /**
@@ -92,9 +91,8 @@ public class MenuManager {
      * @param prices 单价
      * @throws Exception 异常
      */
-    public void addMenu(String name, int number, double prices) throws Exception {
+    public void addMenu(String name, int number, double prices, SendCallback sendCallback) throws Exception {
         Dishes nowDishes = null;
-//        sum += DoubleUtils.multiply(number, prices);
         sum = DoubleUtils.add(sum, DoubleUtils.multiply(number, prices));
         Log.e(TAG, "add sum : " + sum);
         if (!menuMap.isEmpty()) {  //map不为空
@@ -112,25 +110,25 @@ public class MenuManager {
                         Log.e(TAG, "prices*amount: " + nowDishes.getPrices() * nowDishes.getAmount());
                         ConnManager.getConnManager().sendViewCode(MenuCommand.setItemCommand(
                                 nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
-                                sum, IS_CHINESE));
+                                sum, IS_CHINESE), sendCallback);
 
                     } else { //该菜品没有显示，删除显示的第一个菜品，修改信息并添加到显示栏
-                        removeFirstShowingItem(menuMap, sum);
+                        removeFirstShowingItem(menuMap, sum, sendCallback);
                         dishes.setAmount((dishes.getAmount() + number));
                         dishes.setShowing(true);
                         nowDishes = dishes;
                         ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
                                 nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
-                                sum, IS_CHINESE));
+                                sum, IS_CHINESE), sendCallback);
                     }
                 } else { //菜单中没有该商品，删除显示的第一个菜品，添加到菜单中
 
-                    removeFirstShowingItem(menuMap, sum);
+                    removeFirstShowingItem(menuMap, sum, sendCallback);
                     nowDishes = new Dishes(name, number, prices, true);
                     //菜单列表显示新菜品
                     ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
                             nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
-                            sum, IS_CHINESE));
+                            sum, IS_CHINESE), sendCallback);
                 }
 
 
@@ -143,7 +141,7 @@ public class MenuManager {
 
                     ConnManager.getConnManager().sendViewCode(MenuCommand.setItemCommand(
                             nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
-                            sum, IS_CHINESE));
+                            sum, IS_CHINESE), sendCallback);
 
                 } else { //该菜品不存在菜单中,直接添加菜品
                     //添加新菜品到菜单
@@ -151,7 +149,7 @@ public class MenuManager {
                     //菜单列表显示新菜品
                     ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
                             nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
-                            sum, IS_CHINESE));
+                            sum, IS_CHINESE), sendCallback);
                 }
             }
 
@@ -159,7 +157,7 @@ public class MenuManager {
             nowDishes = new Dishes(name, number, prices, true);
             ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
                     nowDishes.getDishName(), nowDishes.getAmount(), nowDishes.getPrices(),
-                    sum, IS_CHINESE));
+                    sum, IS_CHINESE), sendCallback);
         }
         menuMap.put(nowDishes.getDishName(), nowDishes);
     }
@@ -170,7 +168,8 @@ public class MenuManager {
      * @param menuMap 菜单集合
      * @param sum     总计
      */
-    private void removeFirstShowingItem(LinkedHashMap<String, Dishes> menuMap, double sum) {
+    private void removeFirstShowingItem(LinkedHashMap<String, Dishes> menuMap, double sum,
+                                        SendCallback sendCallback) {
         for (String key : menuMap.keySet()) {
             Dishes removeDishes = menuMap.get(key);
             Log.e(TAG, "=====>>>> name: " + removeDishes.getDishName());
@@ -178,7 +177,7 @@ public class MenuManager {
                 LogUtils.Error(TAG, "移除的菜品名字为： " + removeDishes.getDishName());
                 ConnManager.getConnManager().sendViewCode(
                         MenuCommand.getRemoveViewCode(removeDishes.getDishName(),
-                                StringUtils.decimalFormat(sum, 2)));
+                                StringUtils.decimalFormat(sum, 2)), sendCallback);
                 removeDishes.setShowing(false);
                 menuMap.put(removeDishes.getDishName(), removeDishes);
                 break;
@@ -195,7 +194,7 @@ public class MenuManager {
      * @param prices 单价
      * @throws Exception 异常
      */
-    public void subsideMenu(String name, int number, double prices) throws Exception {
+    public void subsideMenu(String name, int number, double prices, SendCallback sendCallback) throws Exception {
 
         if (!menuMap.isEmpty()) {  //列表不为空
             if (menuMap.containsKey(name)) { //菜单中存在该菜品
@@ -210,7 +209,7 @@ public class MenuManager {
                     menuMap.remove(name); //从列表中删除
                     ConnManager.getConnManager().sendViewCode(
                             MenuCommand.getRemoveViewCode(name,
-                                    StringUtils.decimalFormat(sum, 2)));
+                                    StringUtils.decimalFormat(sum, 2)), sendCallback);
 
                     //如果菜单列表中存在未显示的菜品，显示出来
                     for (String s : menuMap.keySet()) {
@@ -220,13 +219,9 @@ public class MenuManager {
                             menuMap.put(addShowDishes.getDishName(), addShowDishes);
                             ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
                                     addShowDishes.getDishName(), addShowDishes.getAmount(),
-                                    addShowDishes.getPrices(), sum, IS_CHINESE));
-                            Log.e(TAG, "*****************************************");
-                            Log.e(TAG, "************ add to delete item ***********");
-                            Log.e(TAG, "*****************************************");
+                                    addShowDishes.getPrices(), sum, IS_CHINESE), sendCallback);
                             break;
                         }
-                        Log.e(TAG, "&&&&&&&&&&&&&&&&&&&&&&&& for &&&&&&&&&&&&&&&&&&&&&");
                     }
 
                 } else {
@@ -235,41 +230,16 @@ public class MenuManager {
                         dishes.setPrices(prices);
                         menuMap.put(name, dishes);
                         ConnManager.getConnManager().sendViewCode(MenuCommand.setItemCommand(
-                                name, dishes.getAmount(), dishes.getPrices(), sum, IS_CHINESE));
+                                name, dishes.getAmount(), dishes.getPrices(), sum, IS_CHINESE), sendCallback);
                     } else {
                         dishes.setAmount(dishes.getAmount() - number);
                         dishes.setPrices(prices);
                         dishes.setShowing(true);
                         menuMap.put(name, dishes);
                         ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
-                                name, dishes.getAmount(), dishes.getPrices(), sum, IS_CHINESE));
+                                name, dishes.getAmount(), dishes.getPrices(), sum, IS_CHINESE), sendCallback);
                     }
                 }
-
-//                //统计现在副屏显示
-//                int showingAmount = 0;
-//                for (String s : menuMap.keySet()) {
-//                    menuMap.get(s).isShowing();
-//                    showingAmount++;
-//                }
-//
-//                if (showingAmount < SHOW_MAX_DISHES) {
-//                    int addShowAmount = 0;
-//                    for (String s : menuMap.keySet()) {
-//                        if (!menuMap.get(s).isShowing()) {
-//                            Dishes addShowDishes = menuMap.get(s);
-//                            ConnManager.getConnManager().sendViewCode(MenuCommand.addItemCommand(
-//                                    addShowDishes.getDishName(), addShowDishes.getAmount(),
-//                                    addShowDishes.getPrices(), sum, IS_CHINESE));
-//                            addShowAmount++;
-//                        }
-//                        if (addShowAmount == (SHOW_MAX_DISHES - showingAmount)) {
-//                            break;
-//                        }
-//                    }
-//                }
-
-
             } else {
                 throw new Exception("The menu does not exist in the menu ...");
             }
@@ -284,13 +254,12 @@ public class MenuManager {
      * @param alreadyPay 已收款
      * @return 指令集
      */
-    public static void pay(double alreadyPay) {
+    public static void pay(double alreadyPay, SendCallback sendCallback) {
         ConnManager.getConnManager().sendViewCode(MenuCommand.getResultViewCode(
-                String.valueOf(alreadyPay), String.valueOf(
-                        DoubleUtils.subtract(alreadyPay, getSum()))));
+                String.valueOf(alreadyPay + (IS_CHINESE ? "元" : "$")), String.valueOf(
+                        DoubleUtils.subtract(alreadyPay, getSum())) +
+                        (IS_CHINESE ? "元" : "$")), sendCallback);
     }
-
-
 
 
     /**

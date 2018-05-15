@@ -3,6 +3,8 @@ package com.posin.menumanager.socket;
 import android.util.Log;
 
 
+import com.posin.menumanager.socket.listener.ConnectCallback;
+import com.posin.menumanager.socket.listener.SendCallback;
 import com.posin.menumanager.utils.Json;
 import com.posin.menumanager.utils.ThreadManage;
 
@@ -32,10 +34,18 @@ public class ConnManager {
      */
     public static ConnManager getConnManager() {
         if (connManager == null) {
-            new Thread(new SocketConnection()).start();
             connManager = new ConnManager();
         }
         return connManager;
+    }
+
+    /**
+     * 连接广告系统
+     *
+     * @param connectCallback 回调方法
+     */
+    public void connectServer(ConnectCallback connectCallback) {
+        new Thread(new SocketConnection(connectCallback)).start();
     }
 
     /**
@@ -61,7 +71,7 @@ public class ConnManager {
      *
      * @param commands 指令集
      */
-    public void sendViewCode(final String[][] commands) {
+    public void sendViewCode(final String[][] commands, final SendCallback sendCallback) {
 
         ThreadManage.getSinglePool().execute(new Runnable() {
             @Override
@@ -73,14 +83,17 @@ public class ConnManager {
                                 formatCommand(commands)) + "#&*@";
                         outputStream.write(msg.getBytes());
                         outputStream.flush();
+                        sendCallback.success();
                         Log.d(TAG, "send: 发送完成:" + msg);
                     } catch (IOException e) {
                         Log.d(TAG, "socket 断开连接，等待重连！");
                         e.printStackTrace();
+                        sendCallback.failure(e);
 
                     }
-                }else{
+                } else {
                     Log.e(TAG, "socket ==null or socket is closed");
+                    sendCallback.failure(new Exception("socket ==null or socket is closed"));
                 }
             }
         });
