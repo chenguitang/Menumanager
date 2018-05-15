@@ -27,7 +27,7 @@ public class MenuManager {
     //    private static Vector<Dishes> mMenuVector=null;
     private static int SHOW_MAX_DISHES = 5;   //默认菜单栏只显示5个菜品
     private static boolean IS_CHINESE = true;  //是否为中文
-    private static double sum = 0; //总计
+//    private static double sum = 0; //总计
 
 
     public static synchronized MenuManager getInstance() {
@@ -63,7 +63,7 @@ public class MenuManager {
     public void initDefaultUI(int showMaxDish, boolean isChinese, final SendCallback sendCallback) throws Exception {
         SHOW_MAX_DISHES = showMaxDish;
         IS_CHINESE = isChinese;
-        sum = 0;
+//        sum = 0;
         menuMap.clear();
         ConnManager.getConnManager().sendViewCode(
                 MenuConfig.getLayoutCommand(MenuConfig.LAYOUT_DEFAULT), sendCallback);
@@ -77,7 +77,7 @@ public class MenuManager {
      * @throws Exception 异常
      */
     public static void clearDishes(SendCallback sendCallback) throws Exception {
-        sum = 0;
+//        sum = 0;
         menuMap.clear();
         ConnManager.getConnManager().sendViewCode(
                 MenuConfig.getLayoutCommand(MenuConfig.LAYOUT_DEFAULT), sendCallback);
@@ -91,10 +91,10 @@ public class MenuManager {
      * @param prices 单价
      * @throws Exception 异常
      */
-    public void addMenu(String name, int number, double prices, SendCallback sendCallback) throws Exception {
+    public void addMenu(String name, int number, double prices, double sum, SendCallback sendCallback) throws Exception {
         Dishes nowDishes = null;
-        sum = DoubleUtils.add(sum, DoubleUtils.multiply(number, prices));
-        Log.e(TAG, "add sum : " + sum);
+//        sum = DoubleUtils.add(sum, DoubleUtils.multiply(number, prices));
+//        Log.e(TAG, "add sum : " + sum);
         if (!menuMap.isEmpty()) {  //map不为空
 
             if (menuMap.size() > SHOW_MAX_DISHES) {  //菜品数量已大于限制显示数量
@@ -194,7 +194,7 @@ public class MenuManager {
      * @param prices 单价
      * @throws Exception 异常
      */
-    public void subsideMenu(String name, int number, double prices, SendCallback sendCallback) throws Exception {
+    public void subsideMenu(String name, int number, double prices, double sum, SendCallback sendCallback) throws Exception {
 
         if (!menuMap.isEmpty()) {  //列表不为空
             if (menuMap.containsKey(name)) { //菜单中存在该菜品
@@ -254,20 +254,20 @@ public class MenuManager {
      * @param alreadyPay 已收款
      * @return 指令集
      */
-    public static void pay(double alreadyPay, SendCallback sendCallback) {
+    public static void pay(double alreadyPay, double sum, SendCallback sendCallback) {
         ConnManager.getConnManager().sendViewCode(MenuCommand.getResultViewCode(
                 String.valueOf(alreadyPay + (IS_CHINESE ? "元" : "$")), String.valueOf(
-                        DoubleUtils.subtract(alreadyPay, getSum())) +
+                        DoubleUtils.subtract(alreadyPay, sum)) +
                         (IS_CHINESE ? "元" : "$")), sendCallback);
     }
 
 
-    /**
-     * 获取菜单总额
-     *
-     * @return double
-     */
-    public static double getSum() {
-        return sum;
-    }
+//    /**
+//     * 获取菜单总额
+//     *
+//     * @return double
+//     */
+//    public static double getSum() {
+//        return sum;
+//    }
 }
