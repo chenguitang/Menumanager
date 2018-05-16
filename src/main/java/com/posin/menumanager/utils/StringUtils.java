@@ -18,6 +18,21 @@ public class StringUtils {
     }
 
     /**
+     * 拼接字符串
+     *
+     * @param message 字符串
+     * @return 拼接后字符串
+     */
+    public static String append(Object ... message) {
+        StringBuffer sb = new StringBuffer();
+        for (Object obj : message) {
+            sb.append(obj);
+        }
+        return sb.toString();
+    }
+
+
+    /**
      * 格式化double类型
      *
      * @param number 数值
@@ -25,7 +40,7 @@ public class StringUtils {
      * @return 格式后的数值(String类型)
      */
     public static String decimalFormat(double number, int digits) {
-        Log.e("decimalFormat", "number: " + number);
+//        Log.e("decimalFormat", "number: " + number);
         if (number == 0) {
             StringBuilder sb = new StringBuilder();
             sb.append("0.");

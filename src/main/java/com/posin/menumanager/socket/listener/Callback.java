@@ -5,17 +5,17 @@ package com.posin.menumanager.socket.listener;
  *
  * Socket操作结果接口
  */
-public interface ConnectCallback {
+public interface Callback {
 
     /**
      * socket连接成功
      */
-    void connectSuccess() throws Exception;
+    void connectSuccess() ;
 
     /**
      * socket连接失败
      *
      * @param e Exception
      */
-    void connectFailure(Exception e) throws Exception;
+    void connectFailure(Exception e);
 }

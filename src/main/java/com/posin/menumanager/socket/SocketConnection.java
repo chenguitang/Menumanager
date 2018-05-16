@@ -3,13 +3,10 @@ package com.posin.menumanager.socket;
 import android.util.Log;
 
 import com.posin.menumanager.global.AppConfig;
-import com.posin.menumanager.socket.listener.ConnectCallback;
+import com.posin.menumanager.socket.listener.Callback;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * created by Greetty at 2018/4/27 10:35
@@ -21,9 +18,9 @@ public class SocketConnection implements Runnable {
     private static final String TAG = "SocketConnection";
 
     private Socket socket = null;
-    private ConnectCallback mConnectCallback;
+    private Callback mConnectCallback;
 
-    public SocketConnection(ConnectCallback connectCallback) {
+    public SocketConnection(Callback connectCallback) {
         this.mConnectCallback = connectCallback;
     }
 

@@ -1,5 +1,6 @@
 package com.posin.menumanager;
 
+import android.content.Context;
 import android.nfc.Tag;
 import android.util.Log;
 
@@ -7,10 +8,17 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 import static android.R.attr.digits;
+import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
 /**
@@ -29,44 +37,36 @@ public class ExampleUnitTest {
 
     @Test
     public void calcStringLength() throws Exception {
-//        String name = "姜葱鸡拼烧鸭";
-////        Log.e(TAG, "length: "+name.length());
-//        System.out.print("length: " + name.length());
-//        System.out.print("submit: " + name.substring(0,name.length()-1)+"...");
 
-//        HashMap<String, String> hashMap = new HashMap<>();
-//        for (int i = 0; i < 10; i++) {
-//            hashMap.put("gree" + i, "我排序为" + i);
+
+        LinkedHashMap<String, String> hashMap = new LinkedHashMap<>();
+        for (int i = 0; i < 10; i++) {
+            hashMap.put("测试" + i, "我就是" + i);
+        }
+
+        hashMap.remove("测试4");
+        hashMap.put("测试4", "测试41243121312");
+
+        ListIterator<Map.Entry<String, String>> iMap = new ArrayList<>(hashMap.entrySet()).listIterator(hashMap.size());
+        while (iMap.hasPrevious()) {
+
+            Map.Entry<String, String> entry = iMap.previous();
+            System.out.println(entry.getKey() + ":  " + entry.getValue());
+        }
+
+//        for (String key : hashMap.keySet()) {
+//            System.out.println("key: " + key);
 //        }
-//
-//        Iterator<String> iterator = hashMap.keySet().iterator();
-//        while (iterator.hasNext()) {
-//            System.out.println("测试值为： " + hashMap.get(iterator.next()));
-//        }
-
-//        System.out.println("40.275 * 3= " + (float) 40.275 * 3);
-//        System.out.println("add(40.275,3) " + add(40.275, 3));
-
-        System.out.println("40.275 + 3= " +  (40.275 + 3.01));
-
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("#.");
-//        for (int i = 0; i < 1; i++) {
-//            sb.append("#");
-//        }
-//        DecimalFormat df = new DecimalFormat(sb.toString());
-//
-//        String format = df.format(40.2712545 * 3);
-//
-//        System.out.println("format: " + format);
-//
-//        System.out.println("test end ... ");
-
     }
 
-    public double add(double b1, double b2) {
-        BigDecimal bignum1 = new BigDecimal(b1);
-        BigDecimal bignum2 = new BigDecimal(b2);
-        return bignum1.multiply(bignum2).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+    // 二维数组纵向合并
+    private static Object[][] unite(Object[][] content1, Object[][] content2) {
+        Object[][] newArrey = new Object[][]{};
+        List<Object[]> list = new ArrayList<>();
+        list.addAll(Arrays.asList(content1));
+        list.addAll(Arrays.asList(content2));
+        return list.toArray(newArrey);
     }
+
+
 }

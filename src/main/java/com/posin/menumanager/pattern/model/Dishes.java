@@ -9,17 +9,23 @@ public class Dishes {
 
     //菜名
     private String dishName;
+
     //数量
     private int amount;
+
     //单价
     private double prices;
+
+    //小计
+    private double subtotal;
     //是否显示在菜单中
     private boolean isShowing;
 
-    public Dishes(String dishName, int amount, double prices, boolean isShowing) {
+    public Dishes(String dishName, int amount, double prices, double subtotal, boolean isShowing) {
         this.dishName = dishName;
         this.amount = amount;
         this.prices = prices;
+        this.subtotal = subtotal;
         this.isShowing = isShowing;
     }
 
@@ -45,6 +51,14 @@ public class Dishes {
 
     public void setPrices(double prices) {
         this.prices = prices;
+    }
+
+    public double getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
     }
 
     public boolean isShowing() {

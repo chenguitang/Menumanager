@@ -3,7 +3,7 @@ package com.posin.menumanager.socket;
 import android.util.Log;
 
 
-import com.posin.menumanager.socket.listener.ConnectCallback;
+import com.posin.menumanager.socket.listener.Callback;
 import com.posin.menumanager.socket.listener.SendCallback;
 import com.posin.menumanager.utils.Json;
 import com.posin.menumanager.utils.ThreadManage;
@@ -44,7 +44,7 @@ public class ConnManager {
      *
      * @param connectCallback 回调方法
      */
-    public void connectServer(ConnectCallback connectCallback) {
+    public void connectServer(Callback connectCallback) {
         new Thread(new SocketConnection(connectCallback)).start();
     }
 
@@ -81,12 +81,13 @@ public class ConnManager {
                         OutputStream outputStream = socket.getOutputStream();
                         String msg = "@*#&0@*#&#&*@" + Json.listToString(
                                 formatCommand(commands)) + "#&*@";
+                        Log.e(TAG, "msg: " + msg);
                         outputStream.write(msg.getBytes());
                         outputStream.flush();
                         sendCallback.success();
                         Log.d(TAG, "send: 发送完成:" + msg);
                     } catch (IOException e) {
-                        Log.d(TAG, "socket 断开连接，等待重连！");
+                        Log.d(TAG, "socket 断开连接 ！");
                         e.printStackTrace();
                         sendCallback.failure(e);
 

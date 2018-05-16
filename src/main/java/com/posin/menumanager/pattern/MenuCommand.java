@@ -1,6 +1,17 @@
 package com.posin.menumanager.pattern;
 
+import android.util.Log;
+
+import com.posin.menumanager.pattern.model.Dishes;
+import com.posin.menumanager.utils.ArrayUtils;
+import com.posin.menumanager.utils.LogUtils;
 import com.posin.menumanager.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * Created by Greetty on 2018/5/8.
@@ -9,231 +20,120 @@ import com.posin.menumanager.utils.StringUtils;
  */
 public class MenuCommand {
 
+    private static final String TAG = "MenuCommand";
+
 
     /**
-     * 添加一个菜品到菜单栏
-     * 格式化后的指令
+     * 生成菜单菜品指令
      *
-     * @param name      菜品名称
-     * @param amount    菜品数量
-     * @param prices    菜品单价
-     * @param sum       所有菜品总计
-     * @param isChinese 是否为中文
-     * @return 指令集
+     * @param menuMaps      菜品集合
+     * @param discountPrice 优惠金额
+     * @param sum           总金额
+     * @param alreadyPay    已付金额
+     * @param giveChange    找零
+     * @param maxShow       最大显示数量
+     * @param isChinese     是否为中文
+     * @return 指令集合
+     * @throws Exception 异常
      */
-    public static String[][] addItemCommand(String name, int amount, double prices,
-                                            double sum, boolean isChinese) {
-
-        if (isChinese) {
-            return MenuCommand.getAddViewCode(StringUtils.formatMaxLength(name, 5), amount +
-                            " * " + StringUtils.decimalFormat(prices, 2) + " ￥",
-                    StringUtils.decimalFormat(amount * prices, 2) + " 元",
-                    StringUtils.decimalFormat(sum, 2));
-
-        } else {
-            return MenuCommand.getAddViewCode(StringUtils.formatMaxLength(name, 5), amount +
-                            " * " + StringUtils.decimalFormat(prices, 2) + " $",
-                    StringUtils.decimalFormat(amount * prices, 2) + " $",
-                    StringUtils.decimalFormat(sum, 2));
+    public static String[][] addMenuCommandCode(LinkedHashMap<String, Dishes> menuMaps,
+                                                double discountPrice, double sum, double alreadyPay,
+                                                double giveChange, int maxShow, boolean isChinese)
+            throws Exception {
+        String[][] commandMenus = new String[][]{{}};
+        if (menuMaps.isEmpty()) {
+            throw new Exception("menu is null ,please Incoming menu ... ");
         }
-    }
+//        Iterator<String> iterator = menuMaps.keySet().iterator();
+        ListIterator<Map.Entry<String, Dishes>> iMenuMap = new ArrayList<>(menuMaps.entrySet()).
+                listIterator(menuMaps.size());
+        for (int i = 0; i < menuMaps.size(); i++) {
 
-    /**
-     * 修改菜单栏菜品信息
-     * 格式化后的指令
-     *
-     * @param name      菜品名称
-     * @param amount    菜品数量
-     * @param prices    菜品单价
-     * @param sum       所有菜品总计
-     * @param isChinese 是否为中文
-     * @return 指令集
-     */
-    public static String[][] setItemCommand(String name, int amount, double prices,
-                                            double sum, boolean isChinese) {
-        if (isChinese) {
-            return MenuCommand.getSetViewCode(StringUtils.formatMaxLength(name, 5), amount +
-                            " * " + StringUtils.decimalFormat(prices, 2) + " ￥",
-                    StringUtils.decimalFormat(amount * prices, 2) + " 元",
-                    StringUtils.decimalFormat(sum, 2));
-        } else {
-            return MenuCommand.getSetViewCode(StringUtils.formatMaxLength(name, 5), amount +
-                            " * " + StringUtils.decimalFormat(prices, 2) + " $",
-                    StringUtils.decimalFormat(amount * prices, 2) + " $",
-                    StringUtils.decimalFormat(sum, 2));
+            String key = iMenuMap.previous().getKey();
+            if (i >= maxShow) {
+                break;
+            }
+            String dishName = menuMaps.get(key).getDishName();
+            String[][] addMenuItemCommand = new String[][]{
+                    {
+                            "action", "add",
+                            "parent", "layout_1_2",
+                            "name", "layout_" + dishName,
+                            "type", "linear_layout",
+                            "orientation", "horizontal",
+                            "width", "match_parent",
+                            "height", "wrap_content",
+                    },
+                    {
+                            "action", "add",
+                            "parent", "layout_" + dishName,
+                            "name", dishName,
+                            "type", "text",
+                            "gravity", "left",
+                            "width", "0",
+                            "weight", "1",
+                            "height", "wrap_content",
+                            "text", dishName,
+                            "size", "16",
+                            "color", "0xFFFFFFFF",
+                    },
+                    {
+                            "action", "add",
+                            "parent", "layout_" + dishName,
+                            "name", "middle_" + dishName,
+                            "type", "text",
+                            "gravity", "center",
+                            "width", "0",
+                            "weight", "1",
+                            "height", "wrap_content",
+                            "text", StringUtils.append(menuMaps.get(key).getAmount(), "*",
+                            menuMaps.get(key).getPrices(), isChinese ? "￥" : "$"),
+                            "size", "16",
+                            "color", "0xFFFFFFFF",
+                    },
+                    {
+                            "action", "add",
+                            "parent", "layout_" + dishName,
+                            "name", "price_" + dishName,
+                            "type", "text",
+                            "gravity", "right",
+                            "width", "0",
+                            "weight", "1",
+                            "height", "wrap_content",
+                            "text", StringUtils.decimalFormat(menuMaps.get(key).getSubtotal(), 2),
+                            "size", "16",
+                            "color", "0xFFFFFFFF",
+                    },
+            };
+            commandMenus = ArrayUtils.mergeTwoDimArrayVer(commandMenus, addMenuItemCommand);
         }
-    }
 
-
-    /**
-     * 修改文本显示
-     *
-     * @param name 布局名称
-     * @param text 文本值
-     * @return 指令集
-     */
-    public static String[][] getSetPromptView(String name, String text) {
-        String[][] vcs = new String[][]{
+        String[][] payCommand = new String[][]{
                 {
                         "action", "set",
-                        "name", name,
-                        "text", text,
-                },
-        };
-
-        return vcs;
-    }
-
-    /**
-     * 添加一条菜品
-     *
-     * @param name          菜品名称
-     * @param middleContent 数量 * 单价
-     * @param subPrice      小计金额
-     * @param sum           累计金额
-     * @return 指令集
-     */
-    public static String[][] getAddViewCode(String name, String middleContent, String subPrice, String sum) {
-
-        String[][] vcs = new String[][]{
-                {
-                        "action", "add",
-                        "parent", "layout_1_2",
-                        "name", "layout_" + name,
-                        "type", "linear_layout",
-                        "orientation", "horizontal",
-                        "width", "match_parent",
-                        "height", "wrap_content",
-                },
-                {
-                        "action", "add",
-                        "parent", "layout_" + name,
-                        "name", name,
-                        "type", "text",
-                        "gravity", "left",
-                        "width", "0",
-                        "weight", "1",
-                        "height", "wrap_content",
-                        "text", name,
-                        "size", "16",
-                        "color", "0xFFFFFFFF",
-                },
-                {
-                        "action", "add",
-                        "parent", "layout_" + name,
-                        "name", "middle_" + name,
-                        "type", "text",
-                        "gravity", "center",
-                        "width", "0",
-                        "weight", "1",
-                        "height", "wrap_content",
-                        "text", middleContent,
-                        "size", "16",
-                        "color", "0xFFFFFFFF",
-                },
-                {
-                        "action", "add",
-                        "parent", "layout_" + name,
-                        "name", "price_" + name,
-                        "type", "text",
-                        "gravity", "right",
-                        "width", "0",
-                        "weight", "1",
-                        "height", "wrap_content",
-                        "text", subPrice,
-                        "size", "16",
-                        "color", "0xFFFFFFFF",
+                        "name", "text_pre",
+                        "text", String.valueOf(discountPrice) + "元",
                 },
                 {
                         "action", "set",
                         "name", "text_cum",
-                        "text", sum + "元",
+                        "text", String.valueOf(sum) + "元",
                 },
-        };
-        return vcs;
-    }
-
-    /**
-     * 获取更改视图代码
-     *
-     * @param name          菜品名称
-     * @param middleContent 数量 * 单价
-     * @param subPrice      小计金额
-     * @param sum           累计金额
-     * @return 指令集
-     */
-    public static String[][] getSetViewCode(String name, String middleContent, String subPrice, String sum) {
-
-        String[][] vcs = new String[][]{
-                {
-                        "action", "set",
-                        "name", "middle_" + name,
-                        "text", middleContent,
-                },
-                {
-                        "action", "set",
-                        "name", "price_" + name,
-                        "text", subPrice,
-                },
-                {
-                        "action", "set",
-                        "name", "text_cum",
-                        "text", sum + "元",
-                },
-        };
-
-        return vcs;
-    }
-
-    /**
-     * 获取移除一条视图的代码
-     *
-     * @param name 菜品名称
-     * @param sum  累计金额
-     * @return 指令集
-     */
-    public static String[][] getRemoveViewCode(String name, String sum) {
-        String[][] vcs = new String[][]{
-                {
-                        "action", "remove",
-                        "name", "layout_" + name,
-                },
-                {
-                        "action", "set",
-                        "name", "text_cum",
-                        "text", sum + "元",
-                },
-        };
-        return vcs;
-    }
-
-    /**
-     * 获取修改支付视图代码
-     *
-     * @param alreadyPay 已收款
-     * @param giveChange 找零
-     * @return 指令集
-     */
-    public static String[][] getResultViewCode(String alreadyPay, String giveChange) {
-
-        String[][] vcs = new String[][]{
                 {
                         "action", "set",
                         "name", "text_paid",
-                        "text", alreadyPay,
+                        "text", String.valueOf(alreadyPay) + "元",
                 },
                 {
                         "action", "set",
                         "name", "text_odd",
-                        "text", giveChange,
+                        "text", String.valueOf(giveChange) + "元",
                 },
-                {
-                        "action", "set",
-                        "name", "text_pre",
-                        "text", alreadyPay,
-                },
-        };
 
-        return vcs;
+        };
+        commandMenus = ArrayUtils.mergeTwoDimArrayVer(commandMenus, payCommand);
+        return commandMenus;
     }
+
+
 }
